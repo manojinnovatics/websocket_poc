@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Chat</title>
+</head>
+<body>
+    <h1>WebSocket Chat</h1>
+    <ul id="messages"></ul>
+    <input type="text" id="messageInput" autocomplete="off" />
+    <button onclick="sendMessage()">Send</button>
+
+    <!-- Admin controls -->
+    <input type="text" id="adminResponseInput" placeholder="Admin Response" autocomplete="off" />
+    <button onclick="sendAdminResponse()">Send Admin Response</button>
+
+    <script>
+        var socket = new WebSocket("ws://" + window.location.host + "/ws/admin");
+
+        socket.onmessage = function (event) {
+            var messages = document.getElementById('messages');
+            var message = document.createElement('li');
+            var content = document.createTextNode(event.data);
+            message.appendChild(content);
+            messages.appendChild(message);
+        };
+
+        function sendMessage() {
+            var inputElement = document.getElementById('messageInput');
+            var message = inputElement.value;
+            socket.send(message);
+            inputElement.value = '';
+        }
+
+        function sendAdminResponse() {
+            var adminResponseInput = document.getElementById('adminResponseInput');
+            var adminResponse = adminResponseInput.value;
+            socket.send("/admin " + adminResponse);
+            adminResponseInput.value = '';
+        }
+    </script>
+</body>
+</html>

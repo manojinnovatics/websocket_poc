@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Admin/ChatGPT Chat</title>
+</head>
+<body>
+    <h1>Admin/ChatGPT Chat</h1>
+    <ul id="messages"></ul>
+    <input type="text" id="messageInput" autocomplete="off" />
+    <button onclick="sendMessage()">Send/Continue</button>
+
+    <script>
+        var socket = new WebSocket("ws://" + window.location.host + "/ws/admin");
+
+        socket.onmessage = function (event) {
+            var messages = document.getElementById('messages');
+            var message = document.createElement('li');
+            var content = document.createTextNode(event.data);
+            message.appendChild(content);
+            messages.appendChild(message);
+        };
+
+        function sendMessage() {
+            var inputElement = document.getElementById('messageInput');
+            var message = inputElement.value;
+            socket.send(message);
+            inputElement.value = '';
+        }
+    </script>
+</body>
+</html>
